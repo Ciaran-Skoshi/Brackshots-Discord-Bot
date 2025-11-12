@@ -1,14 +1,30 @@
 import os
+import discord
 
+class GameMaster():
+    madLibsFiles = []
+    madLibsDir = "madLibs"
+    
+    def getMadLibs(self, dir :str) -> list:
+        madList = []
+        for file in os.scandir(dir):
+            if file.name.endswith(".txt"):
+                madList.append(file)
+        return madList
+    
+    def __init__(self):
+        self.madLibsFiles = self.getMadLibs(self.madLibsDir)
 
 class Game():
 
-    madLibsFiles = []
-    madLibsDir = "madLibs"
-    selectedMadLib = "" #The entire Mad Lib
-    currFillInWord = 0
-    fillInWords = []
-    filledInWords = []
+    def __init__(self, discordUser :discord.user):
+        self.player = discordUser
+        self.isSinglePlayer = True
+        self.selectedMadLib = "" #The entire Mad Lib
+        self.currFillInWord = 0
+        self.fillInWords = []
+        self.filledInWords = []
+    
 
     def getMadLibs(self, dir :str) -> list:
         madList = []
@@ -17,8 +33,8 @@ class Game():
                 madList.append(file)
         return madList
     
-    def selectMadLib(self, select :int):
-        with open(os.path.join(self.madLibsFiles[select]), "r") as f:
+    def selectMadLib(self, joinStr :str):
+        with open(os.path.join(joinStr), "r") as f:
             self.selectedMadLib = f.read()
             print(self.selectedMadLib)
     
@@ -45,13 +61,3 @@ class Game():
                 self.filledInWords[x] = "Word Not Entered"
             self.selectedMadLib = self.selectedMadLib.replace("[" + self.fillInWords[x] + "]", self.filledInWords[x], 1)
         return("Mad Lib: " + self.selectedMadLib)
-    
-    def __init__(self):
-        self.madLibsFiles = self.getMadLibs(self.madLibsDir)
-    
-    def reset(self):
-        self.selectedMadLib = ""
-        self.currFillInWord = 0
-        self.fillInWords = []
-        self.filledInWords = []
-
