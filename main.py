@@ -40,9 +40,6 @@ class Client(commands.Bot):
             await message.channel.send(thisGame.showMadLib())
             games.remove(thisGame)
     
-    async def logoutBot():
-        await client.close()
-    
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -108,6 +105,11 @@ async def startMinecraftServer(interaction: discord.Interaction):
         else:
             await interaction.response.send_message("Server already on")
     
+
+#Makes sure the status.txt is set correctly
+with open("minecraftServer/status.txt", "w") as f:
+    f.write("False")
+
 with open("token.txt", "r") as f:
     token = f.read()
 
