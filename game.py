@@ -36,7 +36,6 @@ class Game():
     def selectMadLib(self, joinStr :str):
         with open(os.path.join(joinStr), "r") as f:
             self.selectedMadLib = f.read()
-            print(self.selectedMadLib)
     
     def getFillInWords(self):
         currWord = ""
@@ -57,7 +56,5 @@ class Game():
 
     def showMadLib(self) -> str:
         for x in range(len(self.filledInWords)):
-            if self.filledInWords[x] == "":
-                self.filledInWords[x] = "Word Not Entered"
             self.selectedMadLib = self.selectedMadLib.replace("[" + self.fillInWords[x] + "]", self.filledInWords[x], 1)
         return("Mad Lib: " + self.selectedMadLib)
