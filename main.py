@@ -54,7 +54,7 @@ async def testCommand(interaction: discord.Interaction):
 
 @client.tree.command(name="how-to-play-mad-libs", description="Tells how to use this bot to play a Mad Lib!", guild=GUILD_ID)
 async def howToMadLib(interaction: discord.Interaction):
-    embed = discord.Embed(title="How to play", description="TODO: Write description", colour=discord.Colour.blue())
+    embed = discord.Embed(title="How to play", colour=discord.Colour.blue())
     embed.add_field(name="How to start a Mad Lib:", value='To start a Mad Lib simply run the "play-mad-lib" command and select a Mad Lib from the dropdown menu (Example Mad Lib is a very short one and good to get an idea of how a Mad Lib works)', inline=False)
     embed.add_field(name="How to play a Mad Lib:", value="Once you have selected a Mad Lib all you need to do is reply to the bot's message (Making sure to ping it or else it will not work) with the word you want to use, keep doing this until the bot spits out your glorious work of writing")
     await interaction.response.send_message(embed=embed)
