@@ -1,4 +1,4 @@
-Skoshi's Discprd Bot for them and their friends
+Skoshi's Discord Bot for them and their friends
 ================================================
 
 How to set up:
