@@ -1,18 +1,26 @@
 import discord
 from discord.ext import commands
 import subprocess
+import json
+import re
 import game #game.py
 
 gameMaster = game.GameMaster()
 games = []
 
+with open("jayson.json", "r") as f:
+    j = json.loads(f.read())
+    token = j["token"]
+    serverID = j["serverID"]
+
 class Client(commands.Bot):
     async def on_ready(self):
+        global serverID
         print(f"Logged on as {self.user}")
 
         #Forces commands to update on the testing server
         try:
-            guild = discord.Object(id=1437275679371821180)
+            guild = discord.Object(id=serverID)
             synced = await self.tree.sync(guild=guild)
             print(f"Synced {len(synced)} command(s) to guild {guild.id}")
         except Exception as e:
@@ -30,8 +38,8 @@ class Client(commands.Bot):
             
             if thisGame == None:
                 return
-            
-            thisGame.filledInWords.append(message.content)
+            #Appends the message content with the bot ping and any white space before and after it removed
+            thisGame.filledInWords.append(re.sub(r"\s*<@1437276201386377298>\s*", "", message.content))
             
             if len(thisGame.filledInWords) < len(thisGame.fillInWords):
                 await message.channel.send(f"Give me a(n) {thisGame.getFillInWord()} <@{message.author.id}>", allowed_mentions=discord.AllowedMentions(users=True))
@@ -46,7 +54,7 @@ intents.message_content = True
 client = Client(command_prefix="!", intents=intents)
 
 
-GUILD_ID = discord.Object(id=1437275679371821180)
+GUILD_ID = discord.Object(id=serverID)
 
 @client.tree.command(name="test-command", description="Shows the author of the interaction", guild=GUILD_ID)
 async def testCommand(interaction: discord.Interaction):
@@ -111,9 +119,6 @@ async def startMinecraftServer(interaction: discord.Interaction):
 #Makes sure the status.txt is set correctly
 with open("minecraftServer/status.txt", "w") as f:
     f.write("False")
-
-with open("token.txt", "r") as f:
-    token = f.read()
 
 client.run(token)
 
