@@ -1,0 +1,11 @@
+minecraftServer/
+!serverMC.py
+!start.sh
+!status.txt
+
+madLibs/
+!Example Mad Lib.txt
+
+__pycache__/
+
+jayson.json
