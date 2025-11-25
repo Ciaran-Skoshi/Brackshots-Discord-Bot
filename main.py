@@ -13,12 +13,16 @@ with open("jayson.json", "r") as f:
     token = j["token"]
     serverID = j["serverID"]
 
+#Makes sure the status.txt is set correctly
+with open("minecraftServer/status.json", "w") as f:
+    f.write(json.dumps(False))
+
 class Client(commands.Bot):
     async def on_ready(self):
         global serverID
         print(f"Logged on as {self.user}")
 
-        #Forces commands to update on the testing server
+        #Forces commands to update on the main server
         try:
             guild = discord.Object(id=serverID)
             synced = await self.tree.sync(guild=guild)
@@ -108,17 +112,16 @@ async def howToJoinMinecraft(interaction: discord.Interaction):
 
 @client.tree.command(name="start-minecraft-server", description="Starts the Brackshots Minecraft Server", guild=GUILD_ID)
 async def startMinecraftServer(interaction: discord.Interaction):
-    with open("minecraftServer/status.txt", "r") as f:
-        if f.read() == "False":
+    with open("minecraftServer/status.json", "r") as f:
+        running = json.loads(f.read())
+        if not running:
             subprocess.Popen(["python3 serverMC.py"], cwd="minecraftServer", shell=True, stdin=subprocess.PIPE, stdout= subprocess.PIPE)
             await interaction.response.send_message("Starting Server")
         else:
             await interaction.response.send_message("Server already on")
     
 
-#Makes sure the status.txt is set correctly
-with open("minecraftServer/status.txt", "w") as f:
-    f.write("False")
+
 
 client.run(token)
 

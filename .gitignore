@@ -1,7 +1,7 @@
 minecraftServer/
 !serverMC.py
 !start.sh
-!status.txt
+!status.json
 
 madLibs/
 !Example Mad Lib.txt
