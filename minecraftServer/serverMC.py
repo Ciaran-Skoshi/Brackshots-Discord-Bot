@@ -8,7 +8,7 @@ def main():
     for line in p.stdout:
         if ("<" in line) or (">" in line):
             print(line, end='')
-        elif "Server empty for 60 seconds, pausing" in line:
+        elif "Server empty for 120 seconds, pausing" in line:
             break
         else:
             print(line, end='')

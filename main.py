@@ -3,10 +3,12 @@ from discord.ext import commands
 import subprocess
 import json
 import re
+from datetime import datetime
 import game #game.py
 
 gameMaster = game.GameMaster()
 games = []
+counter = 0
 
 with open("jayson.json", "r") as f:
     j = json.loads(f.read())
@@ -21,6 +23,7 @@ class Client(commands.Bot):
     async def on_ready(self):
         global serverID
         print(f"Logged on as {self.user}")
+        
 
         #Forces commands to update on the main server
         try:
@@ -57,12 +60,14 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = Client(command_prefix="!", intents=intents)
 
-
 GUILD_ID = discord.Object(id=serverID)
 
-@client.tree.command(name="test-command", description="Shows the author of the interaction", guild=GUILD_ID)
+GUILD_IDS = [discord.Object(id=serverID), discord.Object(id=1437275679371821180)]
+
+
+@client.tree.command(name="test-command", description="Command that does whatever I need it to do", guilds=GUILD_IDS)
 async def testCommand(interaction: discord.Interaction):
-    await interaction.response.send_message(f"Interaction Author = {interaction.user}")
+    await interaction.response.send_message("Nothing to test")
 
 @client.tree.command(name="how-to-play-mad-libs", description="Tells how to use this bot to play a Mad Lib!", guild=GUILD_ID)
 async def howToMadLib(interaction: discord.Interaction):
@@ -119,8 +124,66 @@ async def startMinecraftServer(interaction: discord.Interaction):
             await interaction.response.send_message("Starting Server")
         else:
             await interaction.response.send_message("Server already on")
-    
 
+@client.tree.command(name="most-used-word-of-the-day", description="Shows the top 5 used words of any particular day in the channel you run this command in", guild=GUILD_ID)
+async def mostUsedWordOfDay(interaction: discord.Interaction, year: int, month :int, day :int):
+    try:
+        selectedDate = datetime(year, month, day)
+    except:
+        print(f"Bad date given: {year}/{month}/{day}")
+        await interaction.response.send_message("Error: Invaild date given")
+        return
+
+    dayBefore = datetime.fromtimestamp(selectedDate.timestamp() - 86400)
+    dayAfter = datetime.fromtimestamp(selectedDate.timestamp() + 86400)
+    
+    
+    wordCount :dict = {}
+    messages = interaction.channel.history(limit=10000, after=dayBefore, before=dayAfter)
+    
+    async for msg in messages:
+        words = msg.content.split()
+        for word in words:
+            
+            if "http" in word:
+                wordCount[word] = wordCount.get(word, 0) + 1
+                continue
+
+            if word.startswith("<"):
+                wordCount[word] = wordCount.get(word, 0) + 1
+                continue
+
+            #get rid of , . ' ; 
+            cleanWord = re.sub(r'[^\w\s]', '', word)
+            cleanWord = cleanWord.lower()
+            wordCount[cleanWord] = wordCount.get(cleanWord, 0) + 1
+    
+    res = {k: v for k, v in sorted(wordCount.items(), key=lambda item: (item[1], item[0]), reverse=True)}
+    
+    highestKeys = []
+    i = 0
+    for k, v in res.items():
+        highestKeys.append(k)
+        i += 1
+        if i == 5:
+            break
+    #<t:1765454400:s>
+    message = f"Top five used words on <t:{int(selectedDate.timestamp())}:s> are:\n"
+    for j in highestKeys:
+        message += f"{j}: {res[j]}\n"
+    await interaction.channel.send(message)
+
+@client.tree.command(name="increment-counter", description="Increment the super cool and awesome counter, because you and cool and nice", guild=GUILD_ID)
+async def incrementCounter(interaction: discord.Interaction):
+    global counter
+    counter += 1
+    await interaction.response.send_message(f"Counter is now {counter}!")
+
+@client.tree.command(name="decrement-counter", description="Decrement the super cool and awesome counter, because you are evil and fucked up", guild=GUILD_ID)
+async def incrementCounter(interaction: discord.Interaction):
+    global counter
+    counter -= 1
+    await interaction.response.send_message(f"Counter is now {counter}!")
 
 
 client.run(token)
