@@ -16,8 +16,5 @@ def main():
     with open("status.json", "w") as f:
         f.write(json.dumps(False))
 
-
-
-
 if __name__ == "__main__":
     main()

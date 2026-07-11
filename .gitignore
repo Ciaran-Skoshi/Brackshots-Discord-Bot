@@ -8,4 +8,4 @@ madLibs/
 
 __pycache__/
 
-jayson.json
+config.json
