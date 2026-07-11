@@ -36,12 +36,14 @@ GUILD = discord.Object(id=SERVER_ID)
 
 GUILDS = [discord.Object(id=SERVER_ID), discord.Object(id=1437275679371821180)]
 
-@client.tree.command(name="how-to-join-minecraft", description="Instructions on how to join The Brackshots Minecraft Server", guild=GUILD)
+@client.tree.command(name="minecraft-help", description="Information/help regarding the Brackshots Minecraft Server", guild=GUILD)
 @commands.has_any_role(MINECRAFT_ROLE_ID)
 async def howToJoinMinecraft(interaction: discord.Interaction):
     embed = discord.Embed(title="How to join The Brackshots Minecraft Server", colour=discord.Colour.green())
     #embed.set_thumbnail
-    embed.add_field(name="Direct IP:", value='You should hopefully be able to join the Minecraft server with the IP of "effect-exposed.gl.joinmc.link".\n If this does not work, @ or DM Skoshi to get help', inline=False)
+    embed.add_field(name="Game Version:", value='The server is currently being hosted on 1.21.11', inline=False)
+    embed.add_field(name="Mods:", value='For now this server only has 2 plugins, both being completely server side, Lithium and Skin Restorer. More plugins or maybe full on mods may be added in the future', inline=False)
+    embed.add_field(name="Server Address:", value='You should hopefully be able to join the Minecraft server with the IP of "effect-exposed.gl.joinmc.link".\n If this does not work, @ or DM Skoshi to get help', inline=False)
     await interaction.response.send_message(embed=embed)
 
 @client.tree.command(name="start-minecraft-server", description="Starts the Brackshots Minecraft Server", guild=GUILD)
